@@ -1,0 +1,62 @@
+package com.example.rabbitmqdemo.controller;
+
+import com.example.rabbitmqdemo.service.MessageProducer;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/messages")
+@CrossOrigin("*")
+public class MessageController {
+
+    @Autowired
+    private MessageProducer producer;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+//    @PostMapping("/send")
+//    public ResponseEntity<String> sendMessage(@RequestBody String message) {
+//        producer.send(message);
+//        messagingTemplate.convertAndSend("/topic/messages", message);
+//        return ResponseEntity.ok("Message sent to RabbitMQ and WebSocket");
+//    }
+
+
+        @Autowired
+        private RabbitTemplate rabbitTemplate;
+
+        @PostMapping("/send")
+        public ResponseEntity<String> sendMessage(@RequestBody String message) {
+            rabbitTemplate.convertAndSend("my-exchange", "my-routing-key", message);
+            return ResponseEntity.ok("Message sent to RabbitMQ");
+        }
+
+    @GetMapping("/history")
+    public ResponseEntity<?> getNotificationHistory() {
+        ListOperations<String, Object> listOps = redisTemplate.opsForList();
+        List<Object> history = listOps.range("notificationHistory", 0, -1);
+
+
+        return ResponseEntity.ok(history);
+    }
+    }
+
+
+
+
+
+
+
+
+
+
+
