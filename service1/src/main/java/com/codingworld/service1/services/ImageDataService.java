@@ -1,7 +1,10 @@
 package com.codingworld.service1.services;
 
+import com.codingworld.service1.model.BackGroundColor;
 import com.codingworld.service1.model.ImageData;
+import com.codingworld.service1.repo.BackGroundColorRepository;
 import com.codingworld.service1.repo.ImageDataRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ImageDataService {
+    @Autowired
+    private BackGroundColorRepository repository;
 
     private final ImageDataRepository repo;
 
@@ -64,5 +69,39 @@ public class ImageDataService {
 
 
 
+
+    // Fetch all colors
+    public List<BackGroundColor> getAllColors() {
+        return repository.findAll();
+    }
+
+    // Add a new color
+    public BackGroundColor addColor(BackGroundColor color) {
+        return repository.save(color);
+    }
+
+    // Activate a color and deactivate others
+    public String activateColor(String id) {
+        List<BackGroundColor> allColors = repository.findAll();
+
+        for (BackGroundColor color : allColors) {
+            if(color.getColor().equals(id)) {
+                color.setActive(true);
+            }else{
+                color.setActive(false);
+            }
+        }
+
+        repository.saveAll(allColors);
+        return "Color with ID " + id + " is now active.";
+    }
+
+    // Get the currently active color
+    public BackGroundColor getActiveColor() {
+        return repository.findAll().stream()
+                .filter(BackGroundColor::isActive)
+                .findFirst()
+                .orElse(null);
+    }
 }
 

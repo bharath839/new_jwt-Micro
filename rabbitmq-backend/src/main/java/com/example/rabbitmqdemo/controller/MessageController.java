@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -20,8 +21,15 @@ public class MessageController {
     private MessageProducer producer;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+//    @Autowired
+//    private RedisTemplate<String, Object> redisTemplate;
+@Autowired
+private RabbitTemplate rabbitTemplate;
+
+
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RestTemplate  template;
+
 
 //    @PostMapping("/send")
 //    public ResponseEntity<String> sendMessage(@RequestBody String message) {
@@ -31,8 +39,6 @@ public class MessageController {
 //    }
 
 
-        @Autowired
-        private RabbitTemplate rabbitTemplate;
 
         @PostMapping("/send")
         public ResponseEntity<String> sendMessage(@RequestBody String message) {
@@ -42,9 +48,13 @@ public class MessageController {
 
     @GetMapping("/history")
     public ResponseEntity<?> getNotificationHistory() {
-        ListOperations<String, Object> listOps = redisTemplate.opsForList();
-        List<Object> history = listOps.range("notificationHistory", 0, -1);
 
+
+        List<Object> history =    template.getForObject("http://localhost:1222/redis/history",List.class);
+
+//        ListOperations<String, Object> listOps = redisTemplate.opsForList();
+//        List<Object> history = listOps.range("notificationHistory", 0, -1);
+//
 
         return ResponseEntity.ok(history);
     }

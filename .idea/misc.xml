@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/gateway/gateway/pom.xml" />
         <option value="$PROJECT_DIR$/service1/pom.xml" />
         <option value="$PROJECT_DIR$/service2/pom.xml" />
+        <option value="$PROJECT_DIR$/rabbitmq-backend/pom.xml" />
       </list>
     </option>
   </component>

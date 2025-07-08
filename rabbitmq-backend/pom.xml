@@ -7,7 +7,7 @@
     <groupId>com.example</groupId>
     <artifactId>rabbitmqdemo</artifactId>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>rabbitmqdemo</name>
     <description>Spring Boot RabbitMQ + WebSocket Messaging App</description>
@@ -59,11 +59,12 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version> <!-- ✅ Use this instead of 3.4.0 -->
             </plugin>
         </plugins>
-
     </build>
+
 
 </project>
